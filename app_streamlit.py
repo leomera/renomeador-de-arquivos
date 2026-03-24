@@ -5,12 +5,21 @@ import os
 
 from logic import *
 
+st.title("📦 Gerenciador de Imagens")
+
+modo = st.radio(
+    "Escolha a ação:",
+    ["Renomear Imagens", "Remover Imagens"]
+)
+
 st.set_page_config(layout="wide")
-st.title("📦 Renomeador de Imagens")
 
 # =========================
 # CONFIGURAÇÃO DAS REGRAS
 # =========================
+
+if modo == "Renomear Imagens":
+    st.header("🔤 Renomear Imagens")
 
 rules = {
     "Adiciona '0' após '_' (ex.: exemplo_1.jpg -> exemplo_01.jpg)": AddZeroAfterUnderscore(),
@@ -76,7 +85,7 @@ if uploaded_file:
         st.stop()
 
     # EXECUTAR
-    if st.button("🚀 Executar"):
+    if st.button("🚀 Renomear arquivos"):
         for old, new in changes:
             os.rename(
                 os.path.join(extract_dir, old),
@@ -95,5 +104,72 @@ if uploaded_file:
             st.download_button(
                 "⬇️ Baixar resultado",
                 f,
-                file_name="resultado.zip"
+                file_name="Imagens renomeadas.zip"
             )
+
+elif modo == "Remover Imagens":
+    st.header("🗑️ Remover Imagens")
+
+    uploaded_file = st.file_uploader("Envie um ZIP", type=["zip"])
+
+    if uploaded_file:
+        import zipfile
+        import tempfile
+        import os
+
+        tmp = tempfile.mkdtemp()
+        zip_path = os.path.join(tmp, uploaded_file.name)
+
+        with open(zip_path, "wb") as f:
+            f.write(uploaded_file.read())
+
+        extract_dir = os.path.join(tmp, "files")
+        os.mkdir(extract_dir)
+
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(extract_dir)
+
+        files = sorted(os.listdir(extract_dir))
+
+        st.subheader("Arquivos encontrados:")
+        st.write(files)
+
+        # 👉 ESCOLHER A PARTIR DE QUAL REMOVER
+        index = st.number_input(
+            "Remover a partir de qual número?",
+            min_value=1,
+            step=1
+        )
+
+        # 🔍 PREVIEW
+        files_to_remove = []
+        for f in files:
+            name, ext = os.path.splitext(f)
+
+            if "_" in name:
+                num_part = name.split("_")[-1]
+                if num_part.isdigit() and int(num_part) >= index:
+                    files_to_remove.append(f)
+
+        st.subheader("🧾 Arquivos que serão removidos:")
+        st.write(files_to_remove)
+
+        # 🚀 EXECUTAR
+        if st.button("🚀 Remover arquivos"):
+            for f in files_to_remove:
+                os.remove(os.path.join(extract_dir, f))
+
+            output_zip = os.path.join(tmp, "resultado.zip")
+
+            with zipfile.ZipFile(output_zip, 'w') as zipf:
+                for root, _, files in os.walk(extract_dir):
+                    for file in files:
+                        path = os.path.join(root, file)
+                        zipf.write(path, os.path.relpath(path, extract_dir))
+
+            with open(output_zip, "rb") as f:
+                st.download_button(
+                    "⬇️ Baixar resultado",
+                    f,
+                    file_name="Imagens removidas.zip"
+                )
