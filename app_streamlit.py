@@ -157,12 +157,12 @@ with tab2:
         valid_ext = (".jpg", ".png", ".jpeg", ".webp")
         files = [f for f in files if f.lower().endswith(valid_ext)]
 
-        col1, col2 = st.columns(2)
+        col_esq, col_centro, col_dir = st.columns([1,2,1])
 
-        with col1:
+        with col_centro:
             index = st.number_input("Remover a partir de:", min_value=1, step=1)
 
-        with col2:
+        with col_centro:
             st.info("Arquivos com número >= serão removidos")
 
         files_to_remove = []
