@@ -132,9 +132,11 @@ with tab1:
 # =========================
 
 with tab2:
-    st.subheader("🗑️ Remover Imagens")
 
     col_esq, col_centro, col_dir = st.columns([1,2,1])
+
+    with col_centro:
+        st.subheader("🗑️ Remover Imagens")
 
     with col_centro:
         uploaded_file = st.file_uploader("📁 ZIP", type=["zip"], key="remove")
