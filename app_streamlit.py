@@ -14,6 +14,7 @@ with col1:
     st.image("logo.png", width=50)
 
 with col2:
+    st.image("logo.png", width=50)
     st.markdown("<h2 style='text-align: center;'>Gerenciador de Imagens</h2>", unsafe_allow_html=True)
 
 # TABS (ESSA É A NAVEGAÇÃO CORRETA)
