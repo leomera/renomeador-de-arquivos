@@ -6,13 +6,12 @@ import os
 from logic import *
 
 # CONFIG DA PÁGINA
-st.set_page_config(layout="wide")
 
 st.title("📦 Gerenciador de Imagens")
 st.caption("Renomeie ou remova imagens rapidamente")
 
 # TABS (ESSA É A NAVEGAÇÃO CORRETA)
-tab1, tab2 = st.tabs(["🔤 Renomear imagens", "🗑️ Remover imagens"])
+tab1, tab2 = st.tabs(["Renomear imagens", "Remover imagens"])
 
 # =========================
 # REGRAS
