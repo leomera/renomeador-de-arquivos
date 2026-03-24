@@ -12,7 +12,6 @@ st.title("📦 Gerenciador de Imagens - Flywheel")
 st.caption("Renomeie ou remova imagens rapidamente")
 
 # TABS (ESSA É A NAVEGAÇÃO CORRETA)
-col_esq, col_centro, col_dir = st.columns([1,2,1])
 
 tab1, tab2 = st.tabs(["Renomear imagens", "Remover imagens"])
 
@@ -75,8 +74,6 @@ with tab1:
         # PREVIEW
         changes = option.preview(files, suffix)
 
-        st.subheader("🔍 Preview")
-
         def highlight_changes(val_before, val_after):
             if val_before != val_after:
                 return "background-color: #d4edda; color: black;"  # verde
@@ -84,37 +81,28 @@ with tab1:
 
         preview_data = [{"Antes": a, "Depois": b} for a, b in changes]
 
-        import pandas as pd
+        col_esq, col_centro, col_dir = st.columns([1,2,1])
 
-        def highlight_diff(before, after):
-            result = ""
-            for b, a in zip(before, after):
-                if b != a:
-                    result += f"<span style='color:#00FFAA; font-weight:bold'>{a}</span>"
-                else:
-                    result += a
+        with col_centro:
 
-            # se tamanho mudou (caso raro)
-            if len(after) > len(before):
-                result += f"<span style='color:#00FFAA; font-weight:bold'>{after[len(before):]}</span>"
+            import pandas as pd
 
-            return result
+            preview_data = []
 
-        preview_data = []
+            for antes, depois in changes:
+                preview_data.append({
+                    "Antes": antes,
+                    "Depois": f"<span style='color:#22c55e; font-weight:bold'>{depois}</span>"
+                })
 
-        for a, b in changes:
-            preview_data.append({
-                "Antes": a,
-                "Depois": highlight_diff(a, b)
-            })
+            df = pd.DataFrame(preview_data)
 
-        df = pd.DataFrame(preview_data)
+            st.subheader("🔍 Preview")
 
-        st.write("### 🔍 Preview")
-        st.markdown(
-            df.to_html(escape=False, index=False),
-            unsafe_allow_html=True
-        )
+            st.markdown(
+                df.to_html(escape=False, index=False),
+                unsafe_allow_html=True
+            )
 
         # VALIDAÇÃO
         new_names = [new for _, new in changes]
