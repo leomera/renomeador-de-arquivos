@@ -20,7 +20,7 @@ with col2:
                 padding: 10px;
                 border-radius: 12px;
             '>
-                <img src='https://www.flywheeldigital.com/images/webflow/logo.svg' width='80'>
+                <img src='https://www.flywheeldigital.com/images/webflow/logo.svg' width='150'>
             </div>
         </div>
         """,
