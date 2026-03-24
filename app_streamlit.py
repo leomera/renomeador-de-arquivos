@@ -8,8 +8,14 @@ from logic import *
 # CONFIG DA PÁGINA
 st.set_page_config(layout="wide")
 
-st.title("📦 Gerenciador de Imagens - Flywheel")
-st.caption("Renomeie ou remova imagens rapidamente")
+col1, col2 = st.columns([1,4])
+
+with col1:
+    st.image("logo.png", width=100)
+
+with col2:
+    st.title("Gerenciador de Imagens")
+    st.caption("Renomeie ou remova imagens rapidamente")
 
 # TABS (ESSA É A NAVEGAÇÃO CORRETA)
 
