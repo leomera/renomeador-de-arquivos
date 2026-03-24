@@ -5,8 +5,6 @@ import os
 
 from logic import *
 
-st.title("📦 Gerenciador de Imagens")
-
 modo = st.set_page_config(layout="wide")
 
 st.title("📦 Gerenciador de Imagens")
@@ -18,7 +16,7 @@ tab1, tab2 = st.tabs(["🔤 Renomear imagens", "🗑️ Remover imagens"])
 # CONFIGURAÇÃO DAS REGRAS
 # =========================
 
-if modo == "Renomear Imagens":
+if modo == "🔤 Renomear imagens":
     st.header("🔤 Renomear Imagens")
 
     rules = {
@@ -123,7 +121,7 @@ if modo == "Renomear Imagens":
                     file_name="Imagens renomeadas.zip"
                 )
 
-elif modo == "Remover Imagens":
+elif modo == "🗑️ Remover imagens":
     with tab2:
         st.subheader("🗑️ Remover Imagens")
 
