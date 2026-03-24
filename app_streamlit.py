@@ -11,7 +11,7 @@ st.set_page_config(layout="wide")
 col1, col2, col3 = st.columns([1,2,1])
 
 with col1:
-    st.image("logo.png", width=100)
+    st.image("logo.png", width=50)
 
 with col2:
     st.markdown("<h2 style='text-align: center;'>Gerenciador de Imagens</h2>", unsafe_allow_html=True)
