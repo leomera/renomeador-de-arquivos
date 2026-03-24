@@ -6,8 +6,9 @@ import os
 from logic import *
 
 # CONFIG DA PÁGINA
+st.set_page_config(layout="wide")
 
-st.title("📦 Gerenciador de Imagens")
+st.title("📦 Gerenciador de Imagens - Flywheel")
 st.caption("Renomeie ou remova imagens rapidamente")
 
 # TABS (ESSA É A NAVEGAÇÃO CORRETA)
@@ -44,13 +45,11 @@ rules = {
 with tab1:
     st.subheader("🔤 Renomear Imagens")
 
-    col1, col2 = st.columns(2)
+    col_esq, col_centro, col_dir = st.columns([1,2,1])
 
-    with col1:
+    with col_centro:
         uploaded_file = st.file_uploader("📁 ZIP", type=["zip"])
         suffix = st.text_input("Separador", "_")
-
-    with col2:
         rule_name = st.selectbox("Regra", list(rules.keys()))
 
     if uploaded_file:
@@ -74,8 +73,25 @@ with tab1:
 
         st.subheader("🔍 Preview")
 
+        def highlight_changes(val_before, val_after):
+            if val_before != val_after:
+                return "background-color: #d4edda; color: black;"  # verde
+            return ""
+
         preview_data = [{"Antes": a, "Depois": b} for a, b in changes]
-        st.dataframe(preview_data, use_container_width=True)
+
+        import pandas as pd
+        df = pd.DataFrame(preview_data)
+
+        def style_row(row):
+            if row["Antes"] != row["Depois"]:
+                return ["background-color: #d4edda"] * 2
+            return [""] * 2
+
+        col_esq, col_centro, col_dir = st.columns([1,3,1])
+
+        with col_centro:
+            st.dataframe(df.style.apply(style_row, axis=1), use_container_width=True)
 
         # VALIDAÇÃO
         new_names = [new for _, new in changes]
@@ -84,7 +100,7 @@ with tab1:
             st.stop()
 
         # BOTÃO CENTRALIZADO
-        col1, col2, col3 = st.columns([1,1,1])
+        col1, col2, col3 = st.columns([2,1,2])
 
         with col2:
             executar = st.button("🚀 Renomear arquivos")
