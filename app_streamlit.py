@@ -5,21 +5,20 @@ import os
 
 from logic import *
 
-modo = st.set_page_config(layout="wide")
+# CONFIG DA PÁGINA
+st.set_page_config(layout="wide")
 
 st.title("📦 Gerenciador de Imagens")
 st.caption("Renomeie ou remova imagens rapidamente")
 
+# TABS (ESSA É A NAVEGAÇÃO CORRETA)
 tab1, tab2 = st.tabs(["🔤 Renomear imagens", "🗑️ Remover imagens"])
 
 # =========================
-# CONFIGURAÇÃO DAS REGRAS
+# REGRAS
 # =========================
 
-if modo == "🔤 Renomear imagens":
-    st.header("🔤 Renomear Imagens")
-
-    rules = {
+rules = {
         "Adiciona '0' após '_' (ex.: exemplo_1.jpg -> exemplo_01.jpg)": AddZeroAfterUnderscore(),
         "Remover '_1' do nome (ex.: exemplo_1.jpg -> exemplo.jpg)": RemoveUnderscoreOne(),
         "Incrementa sufixo numérico em +2 (ex.: exemplo_1.jpg -> exemplo_3.jpg)": IncrementSuffixByTwo(),
@@ -33,32 +32,29 @@ if modo == "🔤 Renomear imagens":
         "Adiciona '00' ao prefixo e renomeia sufixos: _1 remove _1, _2+ adiciona _gNN (ex.: 12345_1.jpg -> 0012345.jpg, 12345_2.jpg -> 0012345_g01.jpg)": AddZeroPrefixAndGallerySuffix(),
         "Adiciona 'P' após o número do produto (ex.: 12345_1.jpg -> 12345P_1.jpg)": AddPAfterProductNumber(),
         "Incrementa sufixo numérico em +1 (ex.: 12345_1.jpg -> 12345_2.jpg)": IncrementSuffixByOne()
-    }
+        }
 
     # =========================
     # UI
     # =========================
 
-    with tab1:
-        st.subheader("🔤 Renomear Imagens")
+# =========================
+# 🔤 RENOMEAR
+# =========================
 
-        col1, col2 = st.columns(2)
+with tab1:
+    st.subheader("🔤 Renomear Imagens")
 
-        with col1:
-            uploaded_file = st.file_uploader("📁 ZIP", type=["zip"])
-            suffix = st.text_input("Separador", "_")
+    col1, col2 = st.columns(2)
 
-        with col2:
-            rule_name = st.selectbox("Regra", list(rules.keys()))
+    with col1:
+        uploaded_file = st.file_uploader("📁 ZIP", type=["zip"])
+        suffix = st.text_input("Separador", "_")
 
-        st.divider()
-
-    # =========================
-    # PROCESSAMENTO
-    # =========================
+    with col2:
+        rule_name = st.selectbox("Regra", list(rules.keys()))
 
     if uploaded_file:
-
         tmp_dir = tempfile.mkdtemp()
         zip_path = os.path.join(tmp_dir, uploaded_file.name)
 
@@ -72,7 +68,6 @@ if modo == "🔤 Renomear imagens":
             zip_ref.extractall(extract_dir)
 
         files = sorted(os.listdir(extract_dir))
-
         option = rules[rule_name]
 
         # PREVIEW
@@ -80,23 +75,19 @@ if modo == "🔤 Renomear imagens":
 
         st.subheader("🔍 Preview")
 
-        preview_data = [
-            {"Antes": a, "Depois": b}
-            for a, b in changes
-        ]
-
+        preview_data = [{"Antes": a, "Depois": b} for a, b in changes]
         st.dataframe(preview_data, use_container_width=True)
 
-        # ⚠️ VALIDAÇÃO
+        # VALIDAÇÃO
         new_names = [new for _, new in changes]
         if len(new_names) != len(set(new_names)):
             st.error("⚠️ Conflito de nomes detectado!")
             st.stop()
 
-        # EXECUTAR
-        col_btn1, col_btn2, col_btn3 = st.columns([1,1,1])
+        # BOTÃO CENTRALIZADO
+        col1, col2, col3 = st.columns([1,1,1])
 
-        with col_btn2:
+        with col2:
             executar = st.button("🚀 Renomear arquivos")
 
         if executar:
@@ -121,68 +112,67 @@ if modo == "🔤 Renomear imagens":
                     file_name="Imagens renomeadas.zip"
                 )
 
-elif modo == "🗑️ Remover imagens":
-    with tab2:
-        st.subheader("🗑️ Remover Imagens")
+# =========================
+# 🗑️ REMOVER
+# =========================
 
-        uploaded_file = st.file_uploader("📁 ZIP", type=["zip"], key="remove")
+with tab2:
+    st.subheader("🗑️ Remover Imagens")
 
-        if uploaded_file:
-            import zipfile
-            import tempfile
-            import os
+    uploaded_file = st.file_uploader("📁 ZIP", type=["zip"], key="remove")
 
-            tmp = tempfile.mkdtemp()
-            zip_path = os.path.join(tmp, uploaded_file.name)
+    if uploaded_file:
+        tmp = tempfile.mkdtemp()
+        zip_path = os.path.join(tmp, uploaded_file.name)
 
-            with open(zip_path, "wb") as f:
-                f.write(uploaded_file.read())
+        with open(zip_path, "wb") as f:
+            f.write(uploaded_file.read())
 
-            extract_dir = os.path.join(tmp, "files")
-            os.mkdir(extract_dir)
+        extract_dir = os.path.join(tmp, "files")
+        os.mkdir(extract_dir)
 
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(extract_dir)
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(extract_dir)
 
-            files = sorted(os.listdir(extract_dir))
+        files = sorted(os.listdir(extract_dir))
 
-            valid_ext = (".jpg", ".png", ".jpeg", ".webp")
-            files = [f for f in files if f.lower().endswith(valid_ext)]
+        valid_ext = (".jpg", ".png", ".jpeg", ".webp")
+        files = [f for f in files if f.lower().endswith(valid_ext)]
 
-            col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
 
-            with col1:
-                index = st.number_input("Remover a partir de:", min_value=1, step=1)
+        with col1:
+            index = st.number_input("Remover a partir de:", min_value=1, step=1)
 
-            with col2:
-                st.info("Arquivos com número maior ou igual serão removidos")
+        with col2:
+            st.info("Arquivos com número >= serão removidos")
 
-            files_to_remove = []
+        files_to_remove = []
 
-            for f in files:
-                name, ext = os.path.splitext(f)
+        for f in files:
+            name, ext = os.path.splitext(f)
 
-                if "_" in name:
-                    num = name.split("_")[-1]
-                    if num.isdigit() and int(num) >= index:
-                        files_to_remove.append(f)
+            if "_" in name:
+                num = name.split("_")[-1]
+                if num.isdigit() and int(num) >= index:
+                    files_to_remove.append(f)
 
-            st.divider()
+        st.divider()
 
-            st.subheader("🧾 Preview")
-            st.write(files_to_remove)
+        st.subheader("🧾 Preview")
+        st.write(files_to_remove)
 
-            if st.button("🗑️ Remover"):
-                for f in files_to_remove:
-                    os.remove(os.path.join(extract_dir, f))
+        if st.button("🗑️ Remover"):
+            for f in files_to_remove:
+                os.remove(os.path.join(extract_dir, f))
 
-                output_zip = os.path.join(tmp, "resultado.zip")
+            output_zip = os.path.join(tmp, "resultado.zip")
 
-                with zipfile.ZipFile(output_zip, 'w') as zipf:
-                    for root, _, files in os.walk(extract_dir):
-                        for file in files:
-                            path = os.path.join(root, file)
-                            zipf.write(path, os.path.relpath(path, extract_dir))
+            with zipfile.ZipFile(output_zip, 'w') as zipf:
+                for root, _, files in os.walk(extract_dir):
+                    for file in files:
+                        path = os.path.join(root, file)
+                        zipf.write(path, os.path.relpath(path, extract_dir))
 
-                with open(output_zip, "rb") as f:
-                    st.download_button("⬇️ Baixar resultado", f, "resultado.zip")
+            with open(output_zip, "rb") as f:
+                st.download_button("⬇️ Baixar resultado", f, "resultado.zip")
