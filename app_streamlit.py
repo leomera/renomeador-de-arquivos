@@ -8,14 +8,14 @@ from logic import *
 # CONFIG DA PÁGINA
 st.set_page_config(layout="wide")
 
-col1, col2, col3 = st.columns([1,2,1])
+col1, col2 = st.columns([1,4])
 
 with col1:
     st.image("logo.png", width=50)
 
 with col2:
-    st.image("logo.png", width=50)
-    st.markdown("<h2 style='text-align: center;'>Gerenciador de Imagens</h2>", unsafe_allow_html=True)
+    st.title("📦 Gerenciador de Imagens")
+    st.caption("Renomeie ou remova imagens rapidamente")
 
 # TABS (ESSA É A NAVEGAÇÃO CORRETA)
 
