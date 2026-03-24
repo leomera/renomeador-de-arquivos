@@ -13,7 +13,7 @@ col1, col2, col3 = st.columns([1,2,1])
 with col2:
     st.markdown(
         "<div style='text-align: center;'>"
-        "<img src='logo.png' width='80'>"
+        "<img src='https://www.flywheeldigital.com/images/webflow/logo.svg' width='80'>"
         "</div>",
         unsafe_allow_html=True
     )
