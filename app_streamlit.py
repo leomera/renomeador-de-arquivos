@@ -12,7 +12,10 @@ st.title("📦 Gerenciador de Imagens - Flywheel")
 st.caption("Renomeie ou remova imagens rapidamente")
 
 # TABS (ESSA É A NAVEGAÇÃO CORRETA)
-tab1, tab2 = st.tabs(["Renomear imagens", "Remover imagens"])
+col_esq, col_centro, col_dir = st.columns([1,2,1])
+
+with col_centro:
+    tab1, tab2 = st.tabs(["Renomear imagens", "Remover imagens"])
 
 # =========================
 # REGRAS
@@ -43,9 +46,11 @@ rules = {
 # =========================
 
 with tab1:
-    st.subheader("🔤 Renomear Imagens")
 
     col_esq, col_centro, col_dir = st.columns([1,2,1])
+
+    with col_centro:
+        st.subheader("🔤 Renomear Imagens")
 
     with col_centro:
         uploaded_file = st.file_uploader("📁 ZIP", type=["zip"])
