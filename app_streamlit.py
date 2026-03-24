@@ -13,19 +13,19 @@ st.title("📦 Renomeador de Imagens")
 # =========================
 
 rules = {
-    "Zero após _": AddZeroAfterUnderscore(),
-    "Remover _1": RemoveUnderscoreOne(),
-    "Incrementar +2": IncrementSuffixByTwo(),
-    "Sequência 00,01,02": SequenceZeroPadding(),
-    "Prefixo EXT + letras": PrefixExtWithLetters(),
-    "Diminuir -1": DecrementSuffix(),
-    "Trocar _ por .": ReplaceUnderscoreWithDot(),
-    "Remover último caractere": RemoveLastCharBeforeSeparator(),
-    "Número → Letra": ReplaceUnderscoreNumberWithLetter(),
-    "Número → _Letra": ReplaceNumberWithUnderscoreLetter(),
-    "Galeria _gNN": AddZeroPrefixAndGallerySuffix(),
-    "Adicionar P": AddPAfterProductNumber(),
-    "Incrementar +1": IncrementSuffixByOne()
+    "Adiciona '0' após '_' (ex.: exemplo_1.jpg -> exemplo_01.jpg)": AddZeroAfterUnderscore(),
+    "Remover '_1' do nome (ex.: exemplo_1.jpg -> exemplo.jpg)": RemoveUnderscoreOne(),
+    "Incrementa sufixo numérico em +2 (ex.: exemplo_1.jpg -> exemplo_3.jpg)": IncrementSuffixByTwo(),
+    "Converte sufixo para sequência 00, 01, 02... (ex.: exemplo_1.jpg -> exemplo_00.jpg)": SequenceZeroPadding(),
+    "Prefixo EXT + letras (ex.: 773827336223_1.jpg -> EXT_773827336223_A.jpg)": PrefixExtWithLetters(),
+    "Diminui sufixo numérico em 1 (ex.: 73683297483_2.jpg -> 73683297483_1.jpg)": DecrementSuffix(),
+    "Substitui '_' por '.' (ex.: exemplo_1.jpg -> exemplo.1.jpg)": ReplaceUnderscoreWithDot(),
+    "Remove o último caractere antes de '_' ou '.' (ex.: exemplo_1.jpg -> exempl_1.jpg)": RemoveLastCharBeforeSeparator(),
+    "Substitui '_numero' por letra do alfabeto (ex.: 12345_1.jpg -> 12345A.jpg)": ReplaceUnderscoreNumberWithLetter(),
+    "Substitui 'numero' após underscore por '_letra' (ex.: 12345_1.jpg -> 12345_A.jpg)": ReplaceNumberWithUnderscoreLetter(),
+    "Adiciona '00' ao prefixo e renomeia sufixos: _1 remove _1, _2+ adiciona _gNN (ex.: 12345_1.jpg -> 0012345.jpg, 12345_2.jpg -> 0012345_g01.jpg)": AddZeroPrefixAndGallerySuffix(),
+    "Adiciona 'P' após o número do produto (ex.: 12345_1.jpg -> 12345P_1.jpg)": AddPAfterProductNumber(),
+    "Incrementa sufixo numérico em +1 (ex.: 12345_1.jpg -> 12345_2.jpg)": IncrementSuffixByOne()
 }
 
 # =========================
