@@ -7,10 +7,12 @@ from logic import *
 
 st.title("📦 Gerenciador de Imagens")
 
-modo = st.radio(
-    "Escolha a ação:",
-    ["Renomear Imagens", "Remover Imagens"]
-)
+modo = st.set_page_config(layout="wide")
+
+st.title("📦 Gerenciador de Imagens")
+st.caption("Renomeie ou remova imagens rapidamente")
+
+tab1, tab2 = st.tabs(["🔤 Renomear imagens", "🗑️ Remover imagens"])
 
 # =========================
 # CONFIGURAÇÃO DAS REGRAS
@@ -39,10 +41,19 @@ if modo == "Renomear Imagens":
     # UI
     # =========================
 
-    uploaded_file = st.file_uploader("Envie um .zip", type=["zip"])
+    with tab1:
+        st.subheader("🔤 Renomear Imagens")
 
-    rule_name = st.selectbox("Escolha a regra", list(rules.keys()))
-    suffix = st.text_input("Separador", value="_")
+        col1, col2 = st.columns(2)
+
+        with col1:
+            uploaded_file = st.file_uploader("📁 ZIP", type=["zip"])
+            suffix = st.text_input("Separador", "_")
+
+        with col2:
+            rule_name = st.selectbox("Regra", list(rules.keys()))
+
+        st.divider()
 
     # =========================
     # PROCESSAMENTO
@@ -71,10 +82,12 @@ if modo == "Renomear Imagens":
 
         st.subheader("🔍 Preview")
 
-        st.dataframe(
-            [{"Antes": a, "Depois": b} for a, b in changes],
-            use_container_width=True
-        )
+        preview_data = [
+            {"Antes": a, "Depois": b}
+            for a, b in changes
+        ]
+
+        st.dataframe(preview_data, use_container_width=True)
 
         # ⚠️ VALIDAÇÃO
         new_names = [new for _, new in changes]
@@ -83,7 +96,12 @@ if modo == "Renomear Imagens":
             st.stop()
 
         # EXECUTAR
-        if st.button("🚀 Renomear arquivos"):
+        col_btn1, col_btn2, col_btn3 = st.columns([1,1,1])
+
+        with col_btn2:
+            executar = st.button("🚀 Renomear arquivos")
+
+        if executar:
             for old, new in changes:
                 os.rename(
                     os.path.join(extract_dir, old),
@@ -106,68 +124,67 @@ if modo == "Renomear Imagens":
                 )
 
 elif modo == "Remover Imagens":
-    st.header("🗑️ Remover Imagens")
+    with tab2:
+        st.subheader("🗑️ Remover Imagens")
 
-    uploaded_file = st.file_uploader("Envie um ZIP", type=["zip"])
+        uploaded_file = st.file_uploader("📁 ZIP", type=["zip"], key="remove")
 
-    if uploaded_file:
-        import zipfile
-        import tempfile
-        import os
+        if uploaded_file:
+            import zipfile
+            import tempfile
+            import os
 
-        tmp = tempfile.mkdtemp()
-        zip_path = os.path.join(tmp, uploaded_file.name)
+            tmp = tempfile.mkdtemp()
+            zip_path = os.path.join(tmp, uploaded_file.name)
 
-        with open(zip_path, "wb") as f:
-            f.write(uploaded_file.read())
+            with open(zip_path, "wb") as f:
+                f.write(uploaded_file.read())
 
-        extract_dir = os.path.join(tmp, "files")
-        os.mkdir(extract_dir)
+            extract_dir = os.path.join(tmp, "files")
+            os.mkdir(extract_dir)
 
-        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-            zip_ref.extractall(extract_dir)
+            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                zip_ref.extractall(extract_dir)
 
-        files = sorted(os.listdir(extract_dir))
+            files = sorted(os.listdir(extract_dir))
 
-        st.subheader("Arquivos encontrados:")
-        st.write(files)
+            valid_ext = (".jpg", ".png", ".jpeg", ".webp")
+            files = [f for f in files if f.lower().endswith(valid_ext)]
 
-        # 👉 ESCOLHER A PARTIR DE QUAL REMOVER
-        index = st.number_input(
-            "Remover a partir de qual número?",
-            min_value=1,
-            step=1
-        )
+            col1, col2 = st.columns(2)
 
-        # 🔍 PREVIEW
-        files_to_remove = []
-        for f in files:
-            name, ext = os.path.splitext(f)
+            with col1:
+                index = st.number_input("Remover a partir de:", min_value=1, step=1)
 
-            if "_" in name:
-                num_part = name.split("_")[-1]
-                if num_part.isdigit() and int(num_part) >= index:
-                    files_to_remove.append(f)
+            with col2:
+                st.info("Arquivos com número maior ou igual serão removidos")
 
-        st.subheader("🧾 Arquivos que serão removidos:")
-        st.write(files_to_remove)
+            files_to_remove = []
 
-        # 🚀 EXECUTAR
-        if st.button("🚀 Remover arquivos"):
-            for f in files_to_remove:
-                os.remove(os.path.join(extract_dir, f))
+            for f in files:
+                name, ext = os.path.splitext(f)
 
-            output_zip = os.path.join(tmp, "resultado.zip")
+                if "_" in name:
+                    num = name.split("_")[-1]
+                    if num.isdigit() and int(num) >= index:
+                        files_to_remove.append(f)
 
-            with zipfile.ZipFile(output_zip, 'w') as zipf:
-                for root, _, files in os.walk(extract_dir):
-                    for file in files:
-                        path = os.path.join(root, file)
-                        zipf.write(path, os.path.relpath(path, extract_dir))
+            st.divider()
 
-            with open(output_zip, "rb") as f:
-                st.download_button(
-                    "⬇️ Baixar resultado",
-                    f,
-                    file_name="Imagens removidas.zip"
-                )
+            st.subheader("🧾 Preview")
+            st.write(files_to_remove)
+
+            if st.button("🗑️ Remover"):
+                for f in files_to_remove:
+                    os.remove(os.path.join(extract_dir, f))
+
+                output_zip = os.path.join(tmp, "resultado.zip")
+
+                with zipfile.ZipFile(output_zip, 'w') as zipf:
+                    for root, _, files in os.walk(extract_dir):
+                        for file in files:
+                            path = os.path.join(root, file)
+                            zipf.write(path, os.path.relpath(path, extract_dir))
+
+                with open(output_zip, "rb") as f:
+                    st.download_button("⬇️ Baixar resultado", f, "resultado.zip")
