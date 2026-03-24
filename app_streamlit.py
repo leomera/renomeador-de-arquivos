@@ -14,8 +14,7 @@ st.caption("Renomeie ou remova imagens rapidamente")
 # TABS (ESSA É A NAVEGAÇÃO CORRETA)
 col_esq, col_centro, col_dir = st.columns([1,2,1])
 
-with col_centro:
-    tab1, tab2 = st.tabs(["Renomear imagens", "Remover imagens"])
+tab1, tab2 = st.tabs(["Renomear imagens", "Remover imagens"])
 
 # =========================
 # REGRAS
