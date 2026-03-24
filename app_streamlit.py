@@ -111,9 +111,9 @@ with tab1:
             st.stop()
 
         # BOTÃO CENTRALIZADO
-        col1, col2, col3 = st.columns([2,1,2])
+        col_esq, col_centro, col_dir = st.columns([1,2,1])
 
-        with col2:
+        with col_centro:
             executar = st.button("🚀 Renomear arquivos")
 
         if executar:
