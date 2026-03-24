@@ -3,7 +3,7 @@ import zipfile
 import tempfile
 import os
 
-from app import *
+from logic import *
 
 st.set_page_config(layout="wide")
 st.title("📦 Renomeador de Imagens")
