@@ -85,17 +85,36 @@ with tab1:
         preview_data = [{"Antes": a, "Depois": b} for a, b in changes]
 
         import pandas as pd
+
+        def highlight_diff(before, after):
+            result = ""
+            for b, a in zip(before, after):
+                if b != a:
+                    result += f"<span style='color:#00FFAA; font-weight:bold'>{a}</span>"
+                else:
+                    result += a
+
+            # se tamanho mudou (caso raro)
+            if len(after) > len(before):
+                result += f"<span style='color:#00FFAA; font-weight:bold'>{after[len(before):]}</span>"
+
+            return result
+
+        preview_data = []
+
+        for a, b in changes:
+            preview_data.append({
+                "Antes": a,
+                "Depois": highlight_diff(a, b)
+            })
+
         df = pd.DataFrame(preview_data)
 
-        def style_row(row):
-            if row["Antes"] != row["Depois"]:
-                return ["background-color: #d4edda"] * 2
-            return [""] * 2
-
-        col_esq, col_centro, col_dir = st.columns([1,3,1])
-
-        with col_centro:
-            st.dataframe(df.style.apply(style_row, axis=1), use_container_width=True)
+        st.write("### 🔍 Preview")
+        st.markdown(
+            df.to_html(escape=False, index=False),
+            unsafe_allow_html=True
+        )
 
         # VALIDAÇÃO
         new_names = [new for _, new in changes]
