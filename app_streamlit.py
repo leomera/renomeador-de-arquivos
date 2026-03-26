@@ -18,8 +18,7 @@ with col2:
                 display: inline-block;
                 background-color: white;
                 padding: 10px;
-                border-radius: 12px;
-            '>
+                border-radius: 12px;'>
                 <img src='https://www.flywheeldigital.com/images/webflow/logo.svg' width='150'>
             </div>
         </div>
@@ -73,6 +72,12 @@ with tab1:
 
     with col_centro:
         uploaded_file = st.file_uploader("📁 ZIP", type=["zip"])
+        MAX_SIZE_MB = 400
+
+        if uploaded_file is not None:
+            if uploaded_file.size > MAX_SIZE_MB * 1024 * 1024:
+                st.error(f"❌ Arquivo muito grande! Máximo recomendado: {MAX_SIZE_MB}MB")
+                st.stop()
         suffix = st.text_input("Separador", "_")
         rule_name = st.selectbox("Regra", list(rules.keys()))
 
@@ -90,6 +95,7 @@ with tab1:
             zip_ref.extractall(extract_dir)
 
         files = sorted(os.listdir(extract_dir))
+        st.info(f"📂 {len(files)} arquivos encontrados")
         option = rules[rule_name]
 
         # PREVIEW
@@ -146,7 +152,7 @@ with tab1:
 
             output_zip = os.path.join(tmp_dir, "resultado.zip")
 
-            with zipfile.ZipFile(output_zip, 'w') as zipf:
+            with zipfile.ZipFile(output_zip, 'w', compression=zipfile.ZIP_STORED) as zipf:
                 for root, _, files in os.walk(extract_dir):
                     for file in files:
                         path = os.path.join(root, file)
@@ -220,7 +226,7 @@ with tab2:
 
             output_zip = os.path.join(tmp, "resultado.zip")
 
-            with zipfile.ZipFile(output_zip, 'w') as zipf:
+            with zipfile.ZipFile(output_zip, 'w', compression=zipfile.ZIP_STORED) as zipf:
                 for root, _, files in os.walk(extract_dir):
                     for file in files:
                         path = os.path.join(root, file)
