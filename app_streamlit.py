@@ -163,7 +163,7 @@ with tab1:
                 st.download_button(
                     "⬇️ Baixar resultado",
                     f,
-                    file_name=f"renomeado_{rule_name}.zip"
+                    file_name=f"resultado.zip"
                 )
 
 # =========================
