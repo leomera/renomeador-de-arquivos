@@ -52,7 +52,8 @@ rules = {
         "Substitui 'numero' após underscore por '_letra' (ex.: 12345_1.jpg -> 12345_A.jpg)": ReplaceNumberWithUnderscoreLetter(),
         "Adiciona '00' ao prefixo e renomeia sufixos: _1 remove _1, _2+ adiciona _gNN (ex.: 12345_1.jpg -> 0012345.jpg, 12345_2.jpg -> 0012345_g01.jpg)": AddZeroPrefixAndGallerySuffix(),
         "Adiciona 'P' após o número do produto (ex.: 12345_1.jpg -> 12345P_1.jpg)": AddPAfterProductNumber(),
-        "Incrementa sufixo numérico em +1 (ex.: 12345_1.jpg -> 12345_2.jpg)": IncrementSuffixByOne()
+        "Incrementa sufixo numérico em +1 (ex.: 12345_1.jpg -> 12345_2.jpg)": IncrementSuffixByOne(),
+        "Remover primeiro caractere (ex.: 0123.jpg → 123.jpg)": RemoveFirstCharacter()
         }
 
     # =========================
@@ -162,7 +163,7 @@ with tab1:
                 st.download_button(
                     "⬇️ Baixar resultado",
                     f,
-                    file_name="Imagens renomeadas.zip"
+                    file_name=f"renomeado_{rule_name}.zip"
                 )
 
 # =========================

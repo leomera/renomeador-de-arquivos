@@ -243,3 +243,18 @@ class IncrementSuffixByOne(RenameOption):
                     new_name = f"{suffix.join(parts[:-1])}{suffix}{num}{ext}"
                     changes.append((f, new_name))
         return changes
+
+class RemoveFirstCharacter(RenameOption):
+    """Remove o primeiro caractere do nome do arquivo (ex.: 0123.jpg -> 123.jpg)"""
+
+    def preview(self, files: List[str], suffix: str) -> List[Tuple[str, str]]:
+        changes = []
+
+        for f in files:
+            name, ext = os.path.splitext(f)
+
+            if len(name) > 1:  # evita nome vazio
+                new_name = name[1:] + ext
+                changes.append((f, new_name))
+
+        return changes
